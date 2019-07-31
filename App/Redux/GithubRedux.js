@@ -4,9 +4,9 @@ import Immutable from 'seamless-immutable'
 /* ------------- Types and Action Creators ------------- */
 
 const { Types, Creators } = createActions({
-  userRequest: ['username'],
-  userSuccess: ['avatar'],
-  userFailure: null
+  searchJobRequest: ['queryString'],
+  searchJobSuccess: ['jobs'],
+  searchJobFailure: null
 })
 
 export const GithubTypes = Types
@@ -15,10 +15,10 @@ export default Creators
 /* ------------- Initial State ------------- */
 
 export const INITIAL_STATE = Immutable({
-  avatar: null,
-  fetching: null,
+  jobs: [],
+  fetching: false,
   error: null,
-  username: null
+  totalPage: 1
 })
 
 /* ------------- Selectors ------------- */
@@ -30,23 +30,22 @@ export const GithubSelectors = {
 /* ------------- Reducers ------------- */
 
 // request the avatar for a user
-export const request = (state, { username }) =>
-  state.merge({ fetching: true, username, avatar: null })
+export const request = (state, { queryString }) =>
+  state.merge({ fetching: true, queryString })
 
 // successful avatar lookup
 export const success = (state, action) => {
-  const { avatar } = action
-  return state.merge({ fetching: false, error: null, avatar })
+  const { jobs } = action
+  return state.merge({ fetching: false, error: null, jobs })
 }
 
 // failed to get the avatar
 export const failure = (state) =>
-  state.merge({ fetching: false, error: true, avatar: null })
-
+  state.merge({ fetching: false, error: true })
 /* ------------- Hookup Reducers To Types ------------- */
 
 export const reducer = createReducer(INITIAL_STATE, {
-  [Types.USER_REQUEST]: request,
-  [Types.USER_SUCCESS]: success,
-  [Types.USER_FAILURE]: failure
+  [Types.SEARCH_JOB_REQUEST]: request,
+  [Types.SEARCH_JOB_SUCCESS]: success,
+  [Types.SEARCH_JOB_FAILURE]: failure
 })
